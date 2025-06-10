@@ -11,6 +11,12 @@ import routes from "./routes/index.js";
 import dbConnection from "./utils/connectDB.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://frontend-admin-trabajos.vercel.app"
+];
+
 dotenv.config();
 dbConnection();
 
@@ -21,7 +27,20 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Permite solicitudes sin origen (como Postman o curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `La política CORS bloqueó el acceso desde el origen: ${origin}`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, origin);
+  },
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  credentials: true,
+}));
 
 console.log("CORS configured for allowed origins");
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
