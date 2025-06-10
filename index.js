@@ -21,14 +21,17 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://frontend-admin-trabajos.vercel.app",
+  ],
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  credentials: true,
+}));
 
+console.log("CORS configured for allowed origins");
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
